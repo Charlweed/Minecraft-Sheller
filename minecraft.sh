@@ -8,12 +8,12 @@
 
 # This is the path to where the location of the config.sh file resides.
 # If no file is found, the Configuration settings in this file will be used.
-CONFIG_PATH=/home/minecraft/minecraft-Sheller
+CONFIG_PATH=${PWD}/bin
 
 #	Configuration
 # Main
 MC_PATH=/home/minecraft
-SERVER_PATH=""
+SERVER_PATH="bin"
 ONLINE_PATH=$MC_PATH/$SERVER_PATH
 OFFLINE_PATH=$MC_PATH/offline
 USE_RAMDISK=0
@@ -24,9 +24,9 @@ DISPLAY_ON_LAUNCH=0
 SERVER_OPTIONS=""
 
 # Modifications
-SERVERMOD=1
-MODJAR="craftbukkit-0.0.1-SNAPSHOT.jar"
-RUNECRAFT=1
+SERVERMOD=0
+#MODJAR="craftbukkit-1.2.4-SNAPSHOT.jar"
+RUNECRAFT=0
 MCMYADMIN=0
 
 
@@ -137,6 +137,7 @@ server_launch() {
     	if [[ 1 -eq $SERVERMOD ]]; then
     		echo $MODJAR
     		cd $MC_PATH
+    		echo screen -dmS $SCREEN_NAME java -server -Xmx${MEMMAX}M -Xincgc $SERVER_OPTIONS -jar $MODJAR nogui
     		screen -dmS $SCREEN_NAME java -server -Xmx${MEMMAX}M -Xincgc $SERVER_OPTIONS -jar $MODJAR nogui
     		sleep 1
 		SCREEN_PID2=$(screen -ls $SCREEN_NAME | $PERL -ne 'if ($_ =~ /^\t(\d+)\.$SCREEN_NAME.*$/) { print $1; }')
@@ -145,7 +146,7 @@ server_launch() {
     	else
     		echo "minecraft_server.jar"
     		cd $MC_PATH
-    		screen -dmS $SCREEN_NAME java -server -Xmx${MEMMAX}M -Xincgc $SERVER_OPTIONS -jar minecraft_server.jar nogui
+    		screen -dmS $SCREEN_NAME java -server -Xmx${MEMMAX}M -Xincgc $SERVER_OPTIONS -jar $SERVER_PATH/minecraft_server.jar nogui
     		sleep 1
 		SCREEN_PID2=$(screen -ls $SCREEN_NAME | $PERL -ne 'if ($_ =~ /^\t(\d+)\.$SCREEN_NAME.*$/) { print $1; }')
 		MC_PID2=$(ps -a -u $USERNAME -o pid,ppid,comm | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID2'\s+java/) { print $1; }')
