@@ -610,15 +610,27 @@ if [[ $# -gt 0 ]]; then
 				if [[ -e $MCOVERVIEWER_PATH ]];  then
 					echo "Minecraft-Overviewer in progress..."
 
+  		    mkdir -p $MCOVERVIEWER_MAPS_PATH
+  		    OVERVIEWER_SRC="$OFFLINE_PATH/""world"
+		    export OVERVIEWER_SRC
+		    export MCOVERVIEWER_MAPS_PATH
+		    echo  "python" "$MCOVERVIEWER_PATH/genPOI.py" "$MCOVERVIEWER_POI_OPTIONS"  
+    		    python "$MCOVERVIEWER_PATH/genPOI.py" "$MCOVERVIEWER_POI_OPTIONS"  
+    		    echo "python" "$MCOVERVIEWER_PATH/overviewer.py" "$MCOVERVIEWER_OPTIONS"  
+    		    python "$MCOVERVIEWER_PATH/overviewer.py" "$MCOVERVIEWER_OPTIONS"  
+
                     for DIR in $OFFLINE_PATH/*/;
                     do
                         WORLDDIR=${DIR%/}
                         WORLD=${WORLDDIR##*/}
                         if [[ -e $DIR/level.dat ]]; then
                             echo "Generating map for $WORLD..."
-    						mkdir -p $MCOVERVIEWER_MAPS_PATH
-
-    						python $MCOVERVIEWER_PATH/overviewer.py $MCOVERVIEWER_OPTIONS $OFFLINE_PATH/$WORLD $MCOVERVIEWER_MAPS_PATH/$WORLD
+    						#mkdir -p $MCOVERVIEWER_MAPS_PATH
+						#OVERVIEWER_SRC=$OFFLINE_PATH/$WORLD
+						#export OVERVIEWER_SRC
+						#export MCOVERVIEWER_MAPS_PATH
+    						#python $MCOVERVIEWER_PATH/genpoi.py "$MCOVERVIEWER_POI_OPTIONS"  
+    						#python $MCOVERVIEWER_PATH/overviewer.py "$MCOVERVIEWER_OPTIONS"  
                         fi
 					done
 
