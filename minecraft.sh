@@ -168,7 +168,7 @@ server_launch() {
     	else
     		echo "minecraft_server.jar"
     		cd $MC_PATH
-    		screen -dmS $SCREEN_NAME java -server -Xmx${MEMMAX}M -Xincgc $SERVER_OPTIONS -jar $SERVER_PATH/minecraft_server.jar nogui
+    		screen -dmS $SCREEN_NAME java -server -Xmx${MEMMAX}M -Xincgc $SERVER_OPTIONS -jar "$SERVER_PATH/minecraft_server.jar" nogui
     		sleep 1
 		SCREEN_PID2=$(screen -ls $SCREEN_NAME | $PERL -ne 'if ($_ =~ /^\t(\d+)\.$SCREEN_NAME.*$/) { print $1; }')
                 if [[ -z  $CYGWIN ]]; then
