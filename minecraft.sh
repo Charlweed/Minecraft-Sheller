@@ -115,7 +115,11 @@ if [[ -z $SCREEN_PID ]]; then
 	MC_PID=''
 else
 #	MC_PID=$(ps $SCREEN_PID -F -C java -o pid,ppid,comm | tail -1 | awk '{print $2}')
+    if [[ -z  $CYGWIN ]]; then
 	MC_PID=$(ps -a -u $USERNAME -o pid,ppid,comm | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID'\s+java/) { print $1; }')
+    else
+	MC_PID=$(ps -a -u $USERNAME | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID'\s+java/) { print $1; }')
+    fi
 fi
 
 display() {
@@ -136,12 +140,30 @@ server_launch() {
 	else
     	if [[ 1 -eq $SERVERMOD ]]; then
     		echo $MODJAR
+                if [[ ! -e $MODJAR ]]; then
+                    echo "could not find $MODJAR"
+                    exit 1
+                else
+                    if [[ -n $CYGWIN ]]; then
+                        MODJAR=$(cygpath -w "$MODJAR")
+                    fi
+                    echo "using $MODJAR"
+                fi
     		cd $MC_PATH
-    		echo screen -dmS $SCREEN_NAME java -server -Xmx${MEMMAX}M -Xincgc $SERVER_OPTIONS -jar $MODJAR nogui
-    		screen -dmS $SCREEN_NAME java -server -Xmx${MEMMAX}M -Xincgc $SERVER_OPTIONS -jar $MODJAR nogui
+
+    		echo screen -dmS $SCREEN_NAME java -server -Xmx${MEMMAX}M -Xincgc $SERVER_OPTIONS -jar "$MODJAR" nogui
+    		screen -dmS $SCREEN_NAME java -server -Xmx${MEMMAX}M -Xincgc $SERVER_OPTIONS -jar "$MODJAR" nogui
     		sleep 1
 		SCREEN_PID2=$(screen -ls $SCREEN_NAME | $PERL -ne 'if ($_ =~ /^\t(\d+)\.$SCREEN_NAME.*$/) { print $1; }')
-		MC_PID2=$(ps -a -u $USERNAME -o pid,ppid,comm | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID2'\s+java/) { print $1; }')
+                if [[ -z  $SCREEN_PID2 ]]; then
+                    echo "problem getting screen PID (or starting server)"
+                    exit 1
+                fi
+                if [[ -z  $CYGWIN ]]; then
+                    MC_PID2=$(ps -a -u $USERNAME -o pid,ppid,comm | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID2'\s+java/) { print $1; }')
+                else
+                    MC_PID2=$(ps -a -u $USERNAME | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID2'\s+java/) { print $1; }')
+                fi
 		echo $MC_PID2 > "$MC_PATH/minecraft.pid"
     	else
     		echo "minecraft_server.jar"
@@ -149,7 +171,11 @@ server_launch() {
     		screen -dmS $SCREEN_NAME java -server -Xmx${MEMMAX}M -Xincgc $SERVER_OPTIONS -jar $SERVER_PATH/minecraft_server.jar nogui
     		sleep 1
 		SCREEN_PID2=$(screen -ls $SCREEN_NAME | $PERL -ne 'if ($_ =~ /^\t(\d+)\.$SCREEN_NAME.*$/) { print $1; }')
-		MC_PID2=$(ps -a -u $USERNAME -o pid,ppid,comm | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID2'\s+java/) { print $1; }')
+                if [[ -z  $CYGWIN ]]; then
+                    MC_PID2=$(ps -a -u $USERNAME -o pid,ppid,comm | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID2'\s+java/) { print $1; }')
+                else
+                    MC_PID2=$(ps -a -u $USERNAME | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID2'\s+java/) { print $1; }')
+                fi
 		echo $MC_PID2 > "$MC_PATH/minecraft.pid"
     	fi
     fi
