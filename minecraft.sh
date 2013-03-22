@@ -641,10 +641,10 @@ if [[ $# -gt 0 ]]; then
   		    OVERVIEWER_SRC="$OFFLINE_PATH/""world"
 		    export OVERVIEWER_SRC
 		    export MCOVERVIEWER_MAPS_PATH
-		    echo  "python" "$MCOVERVIEWER_PATH/genPOI.py" "$MCOVERVIEWER_POI_OPTIONS"  
-    		    python "$MCOVERVIEWER_PATH/genPOI.py" "$MCOVERVIEWER_POI_OPTIONS"  
-    		    echo "python" "$MCOVERVIEWER_PATH/overviewer.py" "$MCOVERVIEWER_OPTIONS"  
-    		    python "$MCOVERVIEWER_PATH/overviewer.py" "$MCOVERVIEWER_OPTIONS"  
+		    echo  "python" "$MCOVERVIEWER_PATH/overviewer_core/aux_files/genPOI.py" $MCOVERVIEWER_POI_OPTIONS
+    		    python "$MCOVERVIEWER_PATH/overviewer_core/aux_files/genPOI.py" $MCOVERVIEWER_POI_OPTIONS
+    		    echo "python" "$MCOVERVIEWER_PATH/overviewer.py" $MCOVERVIEWER_OPTIONS  
+    		    python "$MCOVERVIEWER_PATH/overviewer.py" $MCOVERVIEWER_OPTIONS
 
                     for DIR in $OFFLINE_PATH/*/;
                     do
