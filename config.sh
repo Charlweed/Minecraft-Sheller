@@ -3,16 +3,16 @@ echo "Alternate Config file in use"
 # Main
 WORLD_NAME="world"
 MC_PATH=/home/minecraft
-SERVER_PATH=""
-ONLINE_PATH="$MC_PATH"/$SERVER_PATH
+SERVER_PATH=bin
+ONLINE_PATH="$MC_PATH"
 OFFLINE_NAME="$WORLD_NAME"-offline
 OFFLINE_PATH="$MC_PATH""/""$OFFLINE_NAME"
 USE_RAMDISK=0
 RAMDISK_PATH=/dev/shm/
-SCREEN_NAME="minecraft"
+SCREEN_NAME=$(basename "minecraft_production")
 MEMMAX=1536
 DISPLAY_ON_LAUNCH=0
-SERVER_OPTIONS="-XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:+CMSIncrementalPacing -XX:ParallelGCThreads=2 -XX:+AggressiveOpts"
+SERVER_OPTIONS="-XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:+CMSIncrementalPacing -XX:ParallelGCThreads=2 -XX:+AggressiveOpts -Djava.util.logging.config.file=logging.properties"
 
 # Modifications
 SERVERMOD=1
@@ -45,8 +45,8 @@ MAP_CHANGES=1
 
 MCOVERVIEWER_PATH=$MC_PATH/bin
 MCOVERVIEWER_MAPS_PATH=$MAPS_PATH/Overview
-MCOVERVIEWER_OPTIONS="--config=overviewer_config.py"
-MCOVERVIEWER_POI_OPTIONS="--config=overviewer_config.py"
+MCOVERVIEWER_OPTIONS="--config="$MC_PATH/bin/"overviewer_config.py"
+MCOVERVIEWER_POI_OPTIONS="--config="$MC_PATH/bin/"overviewer_config.py"
 PATH=$MC_PATH:$MC_PATH/bin:$BIOME_PATH:$PATH
 
 #       End of configuration
