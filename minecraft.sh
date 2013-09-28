@@ -8,17 +8,17 @@
 
 # This is the path to where the location of the config.sh file resides.
 # If no file is found, the Configuration settings in this file will be used.
-CONFIG_PATH=${PWD}/bin
+CONFIG_PATH=MINECRAFT_HOME_BASH_TOKEN/bin
 
 #	Configuration
 # Main
-MC_PATH=/home/minecraft
+MC_PATH=MINECRAFT_HOME_BASH_TOKEN/bin
 SERVER_PATH="bin"
 ONLINE_PATH=$MC_PATH/$SERVER_PATH
 OFFLINE_PATH=$MC_PATH/offline
 USE_RAMDISK=0
 RAMDISK_PATH=/dev/shm/
-SCREEN_NAME="minecraft"
+SCREEN_NAME="minecraft_unconfigured"
 MEMMAX=1536
 DISPLAY_ON_LAUNCH=0
 SERVER_OPTIONS=""
@@ -50,7 +50,7 @@ CARTO_OPTIONS_NETHER="-N --hell-mode"
 BIOME_PATH=/home/minecraft/BiomeExtractor
 MAP_CHANGES=1
 
-MCOVERVIEWER_PATH=$MC_PATH/Overviewer
+MCOVERVIEWER_PATH=/bin
 MCOVERVIEWER_MAPS_PATH=/var/www/minecraft/maps/Overview
 MCOVERVIEWER_OPTIONS="--rendermodes=lighting,night"
 
@@ -641,8 +641,8 @@ if [[ $# -gt 0 ]]; then
   		    OVERVIEWER_SRC="$OFFLINE_PATH/""world"
 		    export OVERVIEWER_SRC
 		    export MCOVERVIEWER_MAPS_PATH
-		    echo  "python" "$MCOVERVIEWER_PATH/overviewer_core/aux_files/genPOI.py" $MCOVERVIEWER_POI_OPTIONS
-    		    python "$MCOVERVIEWER_PATH/overviewer_core/aux_files/genPOI.py" $MCOVERVIEWER_POI_OPTIONS
+		    echo  "python" "$MCOVERVIEWER_PATH/overviewer.py" $MCOVERVIEWER_POI_OPTIONS
+    		    python "$MCOVERVIEWER_PATH/overviewer.py" $MCOVERVIEWER_POI_OPTIONS
     		    echo "python" "$MCOVERVIEWER_PATH/overviewer.py" $MCOVERVIEWER_OPTIONS  
     		    python "$MCOVERVIEWER_PATH/overviewer.py" $MCOVERVIEWER_OPTIONS
 
