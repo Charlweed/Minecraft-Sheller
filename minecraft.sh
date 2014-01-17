@@ -87,12 +87,37 @@ if [ ! -e $WGET ]; then
         exit 1
 fi
 
-	if [[ -e $ONLINE_PATH/server.log.lck ]]; then
-		#       ps -e | grep java | wc -l
-		ONLINE=1
-	else
-		ONLINE=0
-	fi
+
+#if [[ -e $ONLINE_PATH/server.log.lck ]]; then
+#       ps -e | grep java | wc -l
+#    ONLINE=1
+#else
+#    ONLINE=0
+#fi
+
+screen_pid_diag() {
+    echo SCREEN_PID=$SCREEN_PID
+    echo -n "screen -ls="
+    screen -ls
+    echo -n "screen -ls $SCREEN_NAME="
+    screen -ls $SCREEN_NAME
+}
+
+minecraft_pid_diag() {
+    echo MC_PID=$MC_PID
+    echo "ps_results="
+    if [[ -z  $CYGWIN ]]; then
+	ps -a -u $USERNAME -o pid,ppid,comm 
+    else
+	ps -a -u $USERNAME 
+    fi
+
+}
+
+display() {
+	screen -x $SCREEN_NAME
+}
+
 
 #	Get the PID of our Java process for later use.  Better
 #	than just killing the lowest PID java process like the
@@ -105,6 +130,9 @@ fi
 #	command is 'java'.
 
 # SCREEN_PID=$(screen -list | grep $SCREEN_NAME | grep -iv "No sockets found" | head -n1 | sed "s/^\s//;s/\.$SCREEN_NAME.*$//")
+OFFLINE=0
+ONLINE=1
+
 USERNAME=$(whoami)
 SCREEN_PID=$(screen -ls $SCREEN_NAME | $PERL -ne 'if ($_ =~ /^\t(\d+)\.$SCREEN_NAME.*$/) { print $1; }')
 #        echo "$SCREEN_PID $JAVA_PID"
@@ -112,14 +140,25 @@ SCREEN_PID=$(screen -ls $SCREEN_NAME | $PERL -ne 'if ($_ =~ /^\t(\d+)\.$SCREEN_N
 if [[ -z $SCREEN_PID ]]; then
 	#	Our server seems offline, because there's no screen running.
 	#	Set MC_PID to a null value.
-	MC_PID=''
+#    screen_pid_diag
+    MC_PID=''
 else
 #	MC_PID=$(ps $SCREEN_PID -F -C java -o pid,ppid,comm | tail -1 | awk '{print $2}')
     if [[ -z  $CYGWIN ]]; then
+#		echo NO_CYGWIN_PID
 	MC_PID=$(ps -a -u $USERNAME -o pid,ppid,comm | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID'\s+java/) { print $1; }')
     else
-	MC_PID=$(ps -a -u $USERNAME | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID'\s+java/) { print $1; }')
+#		echo CYGWIN_PID
+		MC_PID=$(ps -a -u $USERNAME | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID'\s+java/) { print $1; }')
     fi
+    if [[ -z $MC_PID ]]; then
+	echo "Could not find minecraft PID for screen PID " $SCREEN_PID
+		mc_pid_diag
+		exit 128
+    fi
+    echo "MineCraft PID="$MC_PID
+    ONLINE=1
+    OFFLINE=''
 fi
 
 display() {
