@@ -130,8 +130,8 @@ display() {
 #	command is 'java'.
 
 # SCREEN_PID=$(screen -list | grep $SCREEN_NAME | grep -iv "No sockets found" | head -n1 | sed "s/^\s//;s/\.$SCREEN_NAME.*$//")
-OFFLINE=0
-ONLINE=1
+OFFLINE=1
+ONLINE=0
 
 USERNAME=$(whoami)
 SCREEN_PID=$(screen -ls $SCREEN_NAME | $PERL -ne 'if ($_ =~ /^\t(\d+)\.$SCREEN_NAME.*$/) { print $1; }')
