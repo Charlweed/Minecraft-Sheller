@@ -149,11 +149,11 @@ else
 	MC_PID=$(ps -a -u $USERNAME -o pid,ppid,comm | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID'\s+java/) { print $1; }')
     else
 #		echo CYGWIN_PID
-		MC_PID=$(ps -a -u $USERNAME | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID'\s+java/) { print $1; }')
+		MC_PID=$(ps -a -u $USERNAME | grep $SCREEN_PID | grep java | cut -c 6-9)
     fi
     if [[ -z $MC_PID ]]; then
 	echo "Could not find minecraft PID for screen PID " $SCREEN_PID
-		mc_pid_diag
+		minecraft_pid_diag
 		exit 128
     fi
     echo "MineCraft PID="$MC_PID
@@ -201,7 +201,7 @@ server_launch() {
                 if [[ -z  $CYGWIN ]]; then
                     MC_PID2=$(ps -a -u $USERNAME -o pid,ppid,comm | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID2'\s+java/) { print $1; }')
                 else
-                    MC_PID2=$(ps -a -u $USERNAME | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID2'\s+java/) { print $1; }')
+                    MC_PID2=$(ps -a -u $USERNAME | grep $SCREEN_PID2 | grep java | cut -c 6-9)
                 fi
 		echo $MC_PID2 > "$MC_PATH/minecraft.pid"
     	else
@@ -213,7 +213,7 @@ server_launch() {
                 if [[ -z  $CYGWIN ]]; then
                     MC_PID2=$(ps -a -u $USERNAME -o pid,ppid,comm | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID2'\s+java/) { print $1; }')
                 else
-                    MC_PID2=$(ps -a -u $USERNAME | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID2'\s+java/) { print $1; }')
+                    MC_PID2=$(ps -a -u $USERNAME | grep $SCREEN_PID2 | grep java | cut -c 6-9)
                 fi
 		echo $MC_PID2 > "$MC_PATH/minecraft.pid"
     	fi
