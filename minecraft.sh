@@ -5,7 +5,8 @@
 # dopeghoti, demonspork, robbiet480, sandain, orospakr, jdiamond, FabianN
 # HighCommander540
 # https://github.com/endofzero/Minecraft-Sheller
-
+set -u
+set -e
 # This is the path to where the location of the config.sh file resides.
 # If no file is found, the Configuration settings in this file will be used.
 CONFIG_PATH=MINECRAFT_HOME_BASH_TOKEN/bin
@@ -25,7 +26,6 @@ SERVER_OPTIONS=""
 
 # Modifications
 SERVERMOD=0
-#MODJAR="craftbukkit-1.2.4-SNAPSHOT.jar"
 RUNECRAFT=0
 MCMYADMIN=0
 
@@ -94,7 +94,8 @@ fi
 #else
 #    ONLINE=0
 #fi
-
+chmod  777 /tmp/uscreens
+chmod  700 /tmp/uscreens/S-"$USER"
 screen_pid_diag() {
     echo SCREEN_PID=$SCREEN_PID
     echo -n "screen -ls="
@@ -107,9 +108,9 @@ minecraft_pid_diag() {
     echo MC_PID=$MC_PID
     echo "ps_results="
     if [[ -z  $CYGWIN ]]; then
-	ps -a -u $USERNAME -o pid,ppid,comm 
+	ps -a -u $USERNAME -o pid,ppid,comm
     else
-	ps -a -u $USERNAME 
+	ps -a -u $USERNAME
     fi
 
 }
@@ -682,7 +683,7 @@ if [[ $# -gt 0 ]]; then
 		    export MCOVERVIEWER_MAPS_PATH
 		    echo  "python" "$MCOVERVIEWER_PATH/overviewer.py" $MCOVERVIEWER_POI_OPTIONS
     		    python "$MCOVERVIEWER_PATH/overviewer.py" $MCOVERVIEWER_POI_OPTIONS
-    		    echo "python" "$MCOVERVIEWER_PATH/overviewer.py" $MCOVERVIEWER_OPTIONS  
+    		    echo "python" "$MCOVERVIEWER_PATH/overviewer.py" $MCOVERVIEWER_OPTIONS
     		    python "$MCOVERVIEWER_PATH/overviewer.py" $MCOVERVIEWER_OPTIONS
 
                     for DIR in $OFFLINE_PATH/*/;
@@ -695,8 +696,8 @@ if [[ $# -gt 0 ]]; then
 						#OVERVIEWER_SRC=$OFFLINE_PATH/$WORLD
 						#export OVERVIEWER_SRC
 						#export MCOVERVIEWER_MAPS_PATH
-    						#python $MCOVERVIEWER_PATH/genpoi.py "$MCOVERVIEWER_POI_OPTIONS"  
-    						#python $MCOVERVIEWER_PATH/overviewer.py "$MCOVERVIEWER_OPTIONS"  
+    						#python $MCOVERVIEWER_PATH/genpoi.py "$MCOVERVIEWER_POI_OPTIONS"
+    						#python $MCOVERVIEWER_PATH/overviewer.py "$MCOVERVIEWER_OPTIONS"
                         fi
 					done
 
@@ -720,7 +721,6 @@ if [[ $# -gt 0 ]]; then
 			cd $MC_PATH
 			if [[ 1 -eq $SERVERMOD ]]; then
 				tar -czf minecraft_server-$DATE.tar.gz minecraft_server.jar $MODJAR
-#				rm craftbukkit.jar
 			else
 				tar -czf minecraft_server-$DATE.tar.gz minecraft_server.jar
 			fi
@@ -728,33 +728,10 @@ if [[ $# -gt 0 ]]; then
 
 			echo "Downloading new binaries..."
 			wget -N http://www.minecraft.net/download/minecraft_server.jar
-		    if [[ 1 -eq $SERVERMOD ]]; then
-				echo "Downloading Bukkit..."
-    			if [[ 1 -eq $MCMYADMIN ]]; then
-		            # McMyAdmin requires this file to be named craftbukkit.jar
-        	        wget -N -O craftbukkit.jar http://ci.bukkit.org/job/dev-CraftBukkit/promotion/latest/Recommended/artifact/target/craftbukkit-0.0.1-SNAPSHOT.jar
-                else
-    				wget -N http://ci.bukkit.org/job/dev-CraftBukkit/promotion/latest/Recommended/artifact/target/craftbukkit-0.0.1-SNAPSHOT.jar
-    			fi
+		        if [[ 1 -eq $SERVERMOD ]]; then
+				echo "Downloading Spigot..."
+    				wget -N https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
 			fi
-			if [[ 1 -eq $RUNECRAFT ]];  then
-				if [[ 1 -eq $SERVERMOD ]];  then
-					echo "Downloading Runecraft..."
-					cd $MC_PATH/plugins/
-					wget -N http://llama.cerberusstudios.net/runecraft/runecraft_latest.jar
-				else
-					echo "Downloading Runecraft..."
-					mkdir -p ModTmp
-					cd ModTmp/
-					wget -N http://llama.cerberusstudios.net/runecraft_latest.zip
-					unzip runecraft_latest.zip
-					jar uvf $MC_PATH/minecraft_server.jar *.class
-					cd $MC_PATH
-					rm -rf ModTmp
-				fi
-			fi
-
-
 			server_launch
 			if [[ 1 -eq $DISPLAY_ON_LAUNCH ]]; then
 				display
