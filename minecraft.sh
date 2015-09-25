@@ -56,6 +56,20 @@ MCOVERVIEWER_MAPS_PATH=/var/www/minecraft/maps/Overview
 MCOVERVIEWER_OPTIONS="--rendermodes=lighting,night"
 
 # 	End of configuration
+error() {
+  local parent_lineno="$1"
+  local message="$2"
+  local code="${3:-1}"
+  if [[ -n "$message" ]] ; then
+    echo "Error on or near line ${parent_lineno}: ${message}; exiting with status ${code}"
+  else
+    echo "Error on or near line ${parent_lineno}; exiting with status ${code}"
+  fi
+  cat `cygpath -W`/Media/Door_Buzzer.wav  > /dev/dsp
+  exit "${code}"
+}
+trap 'error ${LINENO}' ERR
+
 [ -f $CONFIG_PATH/config.sh ] && source $CONFIG_PATH/config.sh
 
 # Make sure that Java, Perl, GNU Screen, and GNU Wget are installed.
@@ -97,21 +111,20 @@ fi
 #fi
 platform=$(uname -s)
 if [[ $platform == *"CYGWIN"* ]] ; then
-    ls -la /tmp/uscreens
     if [[ ! -d /tmp/uscreens ]] ; then
 	echo mkdir --mode=777 /tmp/uscreens
 	mkdir --mode=777 /tmp/uscreens
     else
-	echo chmod 777 /tmp/uscreens	
+	echo chmod 777 /tmp/uscreens
 	chmod 777 /tmp/uscreens
     fi
     if [[ ! -d /tmp/uscreens/S-"$USER" ]] ; then
 	echo mkdir --mode=777 /tmp/uscreens/S-"$USER"
 	mkdir --mode=777 /tmp/uscreens/S-"$USER"
     else
-	echo chmod 700 /tmp/uscreens/S-"$USER"	
+	echo chmod 700 /tmp/uscreens/S-"$USER"
 	chmod 700 /tmp/uscreens/S-"$USER"
-    fi    
+    fi
 fi
 
 
