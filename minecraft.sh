@@ -95,8 +95,25 @@ fi
 #else
 #    ONLINE=0
 #fi
-chmod  777 /tmp/uscreens
-chmod  700 /tmp/uscreens/S-"$USER"
+platform=$(uname -s)
+if [[ $platform == *"CYGWIN"* ]] ; then
+    ls -la /tmp/uscreens
+    if [[ ! -d /tmp/uscreens ]] ; then
+	echo mkdir --mode=777 /tmp/uscreens
+	mkdir --mode=777 /tmp/uscreens
+    else
+	echo chmod 777 /tmp/uscreens	
+	chmod 777 /tmp/uscreens
+    fi
+    if [[ ! -d /tmp/uscreens/S-"$USER" ]] ; then
+	echo mkdir --mode=777 /tmp/uscreens/S-"$USER"
+	mkdir --mode=777 /tmp/uscreens/S-"$USER"
+    else
+	echo chmod 700 /tmp/uscreens/S-"$USER"	
+	chmod 700 /tmp/uscreens/S-"$USER"
+    fi    
+fi
+
 
 echo "#By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula)." > "$EULA_FILE"
 date +'%a %b %d %R:%S %Z %Y' >> "$EULA_FILE"
