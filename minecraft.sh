@@ -23,6 +23,7 @@ SCREEN_NAME="minecraft_unconfigured"
 MEMMAX=1536
 DISPLAY_ON_LAUNCH=0
 SERVER_OPTIONS=""
+EULA_FILE="$MC_PATH"/eula.txt
 
 # Modifications
 SERVERMOD=0
@@ -96,6 +97,11 @@ fi
 #fi
 chmod  777 /tmp/uscreens
 chmod  700 /tmp/uscreens/S-"$USER"
+
+echo "#By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula)." > "$EULA_FILE"
+date +'%a %b %d %R:%S %Z %Y' >> "$EULA_FILE"
+echo "eula=TRUE" >> "$EULA_FILE"
+
 screen_pid_diag() {
     echo SCREEN_PID=$SCREEN_PID
     echo -n "screen -ls="
