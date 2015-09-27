@@ -143,7 +143,7 @@ screen_pid_diag() {
 minecraft_pid_diag() {
     echo MC_PID=$MC_PID
     echo "ps_results="
-    if [[ -z  $CYGWIN ]]; then
+    if [[ $platform != *"CYGWIN"* ]]; then
 	ps -a -u $USERNAME -o pid,ppid,comm
     else
 	ps -a -u $USERNAME
@@ -181,7 +181,7 @@ if [[ -z $SCREEN_PID ]]; then
     MC_PID=''
 else
 #	MC_PID=$(ps $SCREEN_PID -F -C java -o pid,ppid,comm | tail -1 | awk '{print $2}')
-    if [[ -z  $CYGWIN ]]; then
+    if [[ $platform != *"CYGWIN"* ]]; then
 #		echo NO_CYGWIN_PID
 	MC_PID=$(ps -a -u $USERNAME -o pid,ppid,comm | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID'\s+java/) { print $1; }')
     else
@@ -220,7 +220,7 @@ server_launch() {
                     echo "could not find $MODJAR"
                     exit 1
                 else
-                    if [[ -n $CYGWIN ]]; then
+                    if [[ $platform == *"CYGWIN"* ]]; then
                         MODJAR=$(cygpath -w "$MODJAR")
                     fi
                     echo "using $MODJAR"
@@ -235,7 +235,7 @@ server_launch() {
                     echo "problem getting screen PID (or starting server)"
                     exit 1
                 fi
-                if [[ -z  $CYGWIN ]]; then
+                if [[ $platform != *"CYGWIN"* ]]; then
                     MC_PID2=$(ps -a -u $USERNAME -o pid,ppid,comm | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID2'\s+java/) { print $1; }')
                 else
                     MC_PID2=$(ps -a -u $USERNAME | grep $SCREEN_PID2 | grep java | cut -c 6-9)
@@ -247,7 +247,7 @@ server_launch() {
     		screen -dmS $SCREEN_NAME java -server -Xmx${MEMMAX}M -Xincgc $SERVER_OPTIONS -jar "$SERVER_PATH/minecraft_server.jar" nogui
     		sleep 1
 		SCREEN_PID2=$(screen -ls $SCREEN_NAME | $PERL -ne 'if ($_ =~ /^\t(\d+)\.$SCREEN_NAME.*$/) { print $1; }')
-                if [[ -z  $CYGWIN ]]; then
+                if [[ $platform != *"CYGWIN"* ]]; then
                     MC_PID2=$(ps -a -u $USERNAME -o pid,ppid,comm | $PERL -ne 'if ($_ =~ /^\s*(\d+)\s+'$SCREEN_PID2'\s+java/) { print $1; }')
                 else
                     MC_PID2=$(ps -a -u $USERNAME | grep $SCREEN_PID2 | grep java | cut -c 6-9)
